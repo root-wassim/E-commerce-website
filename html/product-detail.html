@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - NeoMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Updated CSS paths -->
+  <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <style>
+    .product-detail {
+      padding: var(--space-2xl) 0;
+    }
+
+    .breadcrumb {
+      margin-bottom: var(--space-xl);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    .breadcrumb a {
+      color: var(--accent);
+      transition: color var(--transition-fast);
+    }
+
+    .breadcrumb a:hover {
+      color: var(--text);
+    }
+
+    .product-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3xl);
+      margin-bottom: var(--space-3xl);
+    }
+
+    .product-images {
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+
+    .main-image {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: var(--space-lg);
+      position: relative;
+    }
+
+    .main-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--transition-base);
+      cursor: zoom-in;
+    }
+
+    .main-image img:hover {
+      transform: scale(1.05);
+    }
+
+    .image-thumbnails {
+      display: flex;
+      gap: var(--space-md);
+    }
+
+    .thumbnail {
+      width: 80px;
+      height: 80px;
+      border: 2px solid var(--glass-border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .thumbnail:hover,
+    .thumbnail.active {
+      border-color: var(--accent);
+    }
+
+    .thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-info h1 {
+      font-size: 2rem;
+      margin-bottom: var(--space-md);
+    }
+
+    .product-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .vendor-info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .specs-table {
+      background: var(--surface);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-xl);
+      backdrop-filter: blur(10px);
+    }
+
+    .specs-table h3 {
+      font-size: 1.125rem;
+      margin-bottom: var(--space-lg);
+    }
+
+    .spec-row {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      padding: var(--space-md) 0;
+      border-bottom: 1px solid var(--glass-border);
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+    }
+
+    .spec-row:last-child {
+      border-bottom: none;
+    }
+
+    .spec-label {
+      color: var(--muted);
+    }
+
+    .spec-value {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .price-section {
+      background: var(--surface);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-xl);
+      backdrop-filter: blur(10px);
+    }
+
+    .price-section .price {
+      margin-bottom: var(--space-lg);
+    }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .quantity-selector label {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm);
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .quantity-controls button {
+      width: 40px;
+      height: 40px;
+      color: var(--text);
+      font-size: 1.25rem;
+      transition: all var(--transition-fast);
+    }
+
+    .quantity-controls button:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .quantity-controls input {
+      width: 60px;
+      height: 40px;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .trust-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+    }
+
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: rgba(0, 230, 195, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      color: var(--accent);
+    }
+
+    .product-tabs {
+      margin-bottom: var(--space-3xl);
+    }
+
+    .tab-list {
+      display: flex;
+      gap: var(--space-md);
+      border-bottom: 1px solid var(--glass-border);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .tab-button {
+      padding: var(--space-md) var(--space-xl);
+      color: var(--muted);
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      transition: all var(--transition-fast);
+    }
+
+    .tab-button:hover {
+      color: var(--text);
+    }
+
+    .tab-button.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .similar-products {
+      padding: var(--space-3xl) 0;
+      background: var(--surface);
+      border-top: 1px solid var(--glass-border);
+    }
+
+    @media (max-width: 1024px) {
+      .product-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .product-images {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="main-nav" id="mainNav">
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="index.html" class="logo">
+          <span class="logo-icon">◆</span>
+          <span class="logo-text">NeoMarket</span>
+        </a>
+      </div>
+      
+      <div class="nav-center">
+        <div class="search-bar">
+          <input type="search" id="navSearch" placeholder="Search gaming hardware..." aria-label="Search products">
+          <button class="search-btn" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button class="search-clear" id="searchClear" aria-label="Clear search" style="display: none;">×</button>
+        </div>
+        <div class="search-suggestions" id="searchSuggestions" style="display: none;"></div>
+      </div>
+      
+      <div class="nav-right">
+        <button class="btn btn-primary btn-sell" onclick="window.location.href='vendor-dashboard.html'">Sell</button>
+        <a href="cart.html" class="icon-btn cart-btn" aria-label="Shopping cart">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M9 2L7 6M17 6l-2-4M6 6h12l1 13H5L6 6zM9 11v5M15 11v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="badge" id="cartBadge">0</span>
+        </a>
+        <div class="profile-menu">
+          <button class="icon-btn profile-btn" id="profileBtn" aria-label="User menu" aria-expanded="false">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 20c0-4 3.5-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="dropdown-menu" id="profileDropdown" style="display: none;">
+            <div id="authMenu"></div>
+          </div>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-search">
+      <input type="search" placeholder="Search products..." aria-label="Search">
+      <button aria-label="Search">🔍</button>
+    </div>
+    <nav class="mobile-nav">
+      <a href="index.html">Home</a>
+      <a href="products.html">Browse</a>
+      <a href="vendor-dashboard.html">Sell</a>
+      <a href="wishlist.html">Wishlist</a>
+      <a href="cart.html">Cart</a>
+      <div id="mobileAuthLinks"></div>
+    </nav>
+  </div>
+
+  <!-- Product Detail -->
+  <section class="product-detail">
+    <div class="container">
+      <nav class="breadcrumb" id="breadcrumb">
+        <a href="index.html">Home</a>
+        <span>/</span>
+        <a href="products.html">Products</a>
+        <span>/</span>
+        <span id="productCategory">Loading...</span>
+      </nav>
+
+      <div class="product-layout">
+        <!-- Product Images -->
+        <div class="product-images">
+          <div class="main-image" id="mainImage">
+            <img src="/placeholder.svg" alt="Product image" id="mainProductImage">
+          </div>
+          <div class="image-thumbnails" id="thumbnails">
+            <!-- Thumbnails will be dynamically inserted -->
+          </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info">
+          <h1 id="productTitle">Loading...</h1>
+          
+          <div class="product-meta">
+            <div class="vendor-info">
+              <span class="vendor-name" id="vendorInfo"></span>
+            </div>
+            <div class="rating" id="productRating"></div>
+          </div>
+
+          <div class="specs-table">
+            <h3>Key Specifications</h3>
+            <div id="specsTable">
+              <!-- Specs will be dynamically inserted -->
+            </div>
+          </div>
+
+          <div class="price-section">
+            <div class="price" id="priceDisplay">
+              <!-- Price will be dynamically inserted -->
+            </div>
+
+            <p style="color: var(--muted); margin-bottom: var(--space-lg);" id="productDescription">
+              <!-- Description will be dynamically inserted -->
+            </p>
+
+            <div class="quantity-selector">
+              <label>Quantity:</label>
+              <div class="quantity-controls">
+                <button onclick="decrementQuantity()" aria-label="Decrease quantity">−</button>
+                <input type="number" id="quantity" value="1" min="1" max="99" readonly>
+                <button onclick="incrementQuantity()" aria-label="Increase quantity">+</button>
+              </div>
+              <span style="color: var(--muted); font-size: 0.875rem;" id="stockInfo"></span>
+            </div>
+
+            <div class="action-buttons">
+              <button class="btn btn-primary" onclick="addCurrentToCart()" style="flex: 1;">
+                Add to Cart
+              </button>
+              <button class="btn btn-secondary" onclick="toggleProductWishlist()" id="wishlistBtn">
+                Add to Wishlist
+              </button>
+            </div>
+
+            <div class="trust-badges">
+              <div class="trust-badge">✓ Verified Seller</div>
+              <div class="trust-badge" id="warrantyBadge"></div>
+              <div class="trust-badge">↺ 30-Day Returns</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Tabs -->
+      <div class="product-tabs">
+        <div class="tab-list">
+          <button class="tab-button active" onclick="switchTab('description')">Description</button>
+          <button class="tab-button" onclick="switchTab('specifications')">Specifications</button>
+          <button class="tab-button" onclick="switchTab('reviews')">Reviews</button>
+          <button class="tab-button" onclick="switchTab('seller')">Seller Info</button>
+        </div>
+
+        <div class="tab-content active" id="tab-description">
+          <p style="color: var(--muted); line-height: 1.8;" id="fullDescription"></p>
+        </div>
+
+        <div class="tab-content" id="tab-specifications">
+          <div id="fullSpecs"></div>
+        </div>
+
+        <div class="tab-content" id="tab-reviews">
+          <p style="color: var(--muted);">Customer reviews feature coming soon. This product has a <span id="avgRating" style="color: var(--accent);"></span> average rating from <span id="reviewCount" style="color: var(--accent);"></span> reviews.</p>
+        </div>
+
+        <div class="tab-content" id="tab-seller">
+          <div id="sellerInfo" style="color: var(--muted);"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Similar Products -->
+  <section class="similar-products">
+    <div class="container">
+      <h2 class="section-title" style="text-align: left;">Similar Products</h2>
+      <div class="product-grid" id="similarProducts" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+        <!-- Similar products will be dynamically inserted -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>NeoMarket</h3>
+          <p>Your trusted marketplace for premium gaming hardware.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <a href="products.html">All Products</a>
+          <a href="products.html?category=gpu">Graphics Cards</a>
+          <a href="products.html?category=mice">Gaming Mice</a>
+          <a href="products.html?category=keyboards">Keyboards</a>
+        </div>
+        <div class="footer-col">
+          <h4>Account</h4>
+          <a href="login.html">Login</a>
+          <a href="register.html">Register</a>
+          <a href="wishlist.html">Wishlist</a>
+          <a href="cart.html">Cart</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#">Help Center</a>
+          <a href="#">Shipping Info</a>
+          <a href="#">Returns</a>
+          <a href="#">Contact Us</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 NeoMarket. Pure HTML/CSS/JS Project.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Updated JS paths -->
+  <script src="../js/config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toasts.js"></script>
+  <script src="../js/modals.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/cart.js"></script>
+  <script src="../js/wishlist.js"></script>
+  <script src="../js/products.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    let currentProduct = null;
+
+    function initProductDetail() {
+      const params = getUrlParams();
+      const productId = params.id;
+
+      if (!productId) {
+        window.location.href = 'products.html';
+        return;
+      }
+
+      currentProduct = findProductById(productId);
+
+      if (!currentProduct) {
+        showToast('Product not found', 'error');
+        setTimeout(() => window.location.href = 'products.html', 2000);
+        return;
+      }
+
+      displayProductDetails();
+      displaySimilarProducts();
+    }
+
+    function displayProductDetails() {
+      const hasDiscount = currentProduct.originalPrice && currentProduct.originalPrice > currentProduct.price;
+
+      // Update page title
+      document.title = `${currentProduct.title} - NeoMarket`;
+
+      // Breadcrumb
+      document.getElementById('productCategory').textContent = currentProduct.category.toUpperCase();
+
+      // Main image
+      document.getElementById('mainProductImage').src = currentProduct.primaryImage;
+      document.getElementById('mainProductImage').alt = currentProduct.title;
+
+      // Title and vendor
+      document.getElementById('productTitle').textContent = currentProduct.title;
+      document.getElementById('vendorInfo').innerHTML = `
+        ${escapeHtml(currentProduct.vendorName)}
+        ${currentProduct.verified ? '<span class="verified">✓</span>' : ''}
+      `;
+
+      // Rating
+      document.getElementById('productRating').innerHTML = `
+        ${generateStarRating(currentProduct.rating)}
+        <span class="rating-count">(${currentProduct.reviewCount} reviews)</span>
+      `;
+
+      // Specs table
+      const specsHTML = Object.entries(currentProduct.specs).map(([key, value]) => `
+        <div class="spec-row">
+          <div class="spec-label">${key}</div>
+          <div class="spec-value">${value}</div>
+        </div>
+      `).join('');
+      document.getElementById('specsTable').innerHTML = specsHTML;
+      document.getElementById('fullSpecs').innerHTML = specsHTML;
+
+      // Price
+      document.getElementById('priceDisplay').innerHTML = `
+        <span class="current-price">${formatCurrency(currentProduct.price)}</span>
+        ${hasDiscount ? `<span class="original-price">${formatCurrency(currentProduct.originalPrice)}</span>` : ''}
+      `;
+
+      // Description
+      document.getElementById('productDescription').textContent = currentProduct.description;
+      document.getElementById('fullDescription').textContent = currentProduct.description;
+
+      // Stock info
+      document.getElementById('stockInfo').textContent = `${currentProduct.stock} in stock`;
+      document.getElementById('quantity').max = currentProduct.stock;
+
+      // Warranty badge
+      document.getElementById('warrantyBadge').textContent = `🛡 ${currentProduct.warranty} Months Warranty`;
+
+      // Review count
+      document.getElementById('avgRating').textContent = currentProduct.rating;
+      document.getElementById('reviewCount').textContent = currentProduct.reviewCount;
+
+      // Seller info
+      document.getElementById('sellerInfo').innerHTML = `
+        <h3 style="color: var(--text); margin-bottom: var(--space-md);">${escapeHtml(currentProduct.vendorName)}</h3>
+        <p><strong>Shipping from:</strong> ${currentProduct.shippingFrom}</p>
+        <p><strong>Verified Seller:</strong> ${currentProduct.verified ? 'Yes' : 'No'}</p>
+        <p><strong>Warranty:</strong> ${currentProduct.warranty} months</p>
+      `;
+
+      // Wishlist button
+      updateWishlistButton();
+    }
+
+    function updateWishlistButton() {
+      const btn = document.getElementById('wishlistBtn');
+      const inWishlist = isInWishlist(currentProduct.id);
+      btn.textContent = inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist';
+    }
+
+    function displaySimilarProducts() {
+      const similar = filterProducts({ category: currentProduct.category })
+        .filter(p => p.id !== currentProduct.id)
+        .slice(0, 4);
+      
+      displayProducts(similar, 'similarProducts');
+    }
+
+    function incrementQuantity() {
+      const input = document.getElementById('quantity');
+      const current = parseInt(input.value);
+      if (current < parseInt(input.max)) {
+        input.value = current + 1;
+      }
+    }
+
+    function decrementQuantity() {
+      const input = document.getElementById('quantity');
+      const current = parseInt(input.value);
+      if (current > 1) {
+        input.value = current - 1;
+      }
+    }
+
+    function addCurrentToCart() {
+      const quantity = parseInt(document.getElementById('quantity').value);
+      if (addToCart(currentProduct.id, quantity)) {
+        document.getElementById('quantity').value = 1;
+      }
+    }
+
+    function toggleProductWishlist() {
+      toggleWishlist(currentProduct.id);
+      updateWishlistButton();
+    }
+
+    function switchTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', initProductDetail);
+  </script>
+</body>
+</html>

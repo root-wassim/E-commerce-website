@@ -1,0 +1,80 @@
+/* Tablet */
+@media (max-width: 1024px) {
+  .nav-center {
+    max-width: 400px;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .nav-container {
+    gap: var(--space-md);
+  }
+
+  .nav-center {
+    display: none;
+  }
+
+  .btn-sell {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .hero {
+    padding: var(--space-2xl) 0;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .trust-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .toast-container {
+    bottom: var(--space-lg);
+    right: var(--space-lg);
+    left: var(--space-lg);
+    max-width: none;
+  }
+
+  .modal-content {
+    padding: var(--space-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 var(--space-md);
+  }
+
+  .category-chips {
+    gap: var(--space-sm);
+  }
+
+  .chip {
+    padding: var(--space-xs) var(--space-md);
+    font-size: 0.75rem;
+  }
+}

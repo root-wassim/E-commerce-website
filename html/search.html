@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results - NeoMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Updated CSS paths -->
+  <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="main-nav" id="mainNav">
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="index.html" class="logo">
+          <span class="logo-icon">◆</span>
+          <span class="logo-text">NeoMarket</span>
+        </a>
+      </div>
+      
+      <div class="nav-center">
+        <div class="search-bar">
+          <input type="search" id="navSearch" placeholder="Search gaming hardware..." aria-label="Search products">
+          <button class="search-btn" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button class="search-clear" id="searchClear" aria-label="Clear search" style="display: none;">×</button>
+        </div>
+        <div class="search-suggestions" id="searchSuggestions" style="display: none;"></div>
+      </div>
+      
+      <div class="nav-right">
+        <button class="btn btn-primary btn-sell" onclick="window.location.href='vendor-dashboard.html'">Sell</button>
+        <a href="cart.html" class="icon-btn cart-btn" aria-label="Shopping cart">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M9 2L7 6M17 6l-2-4M6 6h12l1 13H5L6 6zM9 11v5M15 11v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="badge" id="cartBadge">0</span>
+        </a>
+        <div class="profile-menu">
+          <button class="icon-btn profile-btn" id="profileBtn" aria-label="User menu" aria-expanded="false">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 20c0-4 3.5-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="dropdown-menu" id="profileDropdown" style="display: none;">
+            <div id="authMenu"></div>
+          </div>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-search">
+      <input type="search" placeholder="Search products..." aria-label="Search">
+      <button aria-label="Search">🔍</button>
+    </div>
+    <nav class="mobile-nav">
+      <a href="index.html">Home</a>
+      <a href="products.html">Browse</a>
+      <a href="vendor-dashboard.html">Sell</a>
+      <a href="wishlist.html">Wishlist</a>
+      <a href="cart.html">Cart</a>
+      <div id="mobileAuthLinks"></div>
+    </nav>
+  </div>
+
+  <!-- Search Results -->
+  <section class="featured-products" style="padding: var(--space-3xl) 0;">
+    <div class="container">
+      <h1 class="section-title" style="text-align: left;">Results for "<span id="searchQuery"></span>"</h1>
+      <p class="products-count" id="resultsCount" style="text-align: left; margin-bottom: var(--space-2xl);">Searching...</p>
+      <div class="product-grid" id="searchResults">
+        <!-- Results will be dynamically inserted here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>NeoMarket</h3>
+          <p>Your trusted marketplace for premium gaming hardware.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <a href="products.html">All Products</a>
+          <a href="products.html?category=gpu">Graphics Cards</a>
+          <a href="products.html?category=mice">Gaming Mice</a>
+          <a href="products.html?category=keyboards">Keyboards</a>
+        </div>
+        <div class="footer-col">
+          <h4>Account</h4>
+          <a href="login.html">Login</a>
+          <a href="register.html">Register</a>
+          <a href="wishlist.html">Wishlist</a>
+          <a href="cart.html">Cart</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#">Help Center</a>
+          <a href="#">Shipping Info</a>
+          <a href="#">Returns</a>
+          <a href="#">Contact Us</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 NeoMarket. Pure HTML/CSS/JS Project.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Quick View Modal -->
+  <div class="modal" id="quickViewModal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-lg">
+      <button class="modal-close" aria-label="Close">&times;</button>
+      <div id="quickViewContent"></div>
+    </div>
+  </div>
+
+  <!-- Updated JS paths -->
+  <script src="../js/config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toasts.js"></script>
+  <script src="../js/modals.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/cart.js"></script>
+  <script src="../js/wishlist.js"></script>
+  <script src="../js/products.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    function initSearchPage() {
+      const params = getUrlParams();
+      const query = params.q || '';
+      
+      document.getElementById('searchQuery').textContent = query;
+      document.getElementById('navSearch').value = query;
+
+      if (query) {
+        const results = filterProducts({ query });
+        displayProducts(results, 'searchResults');
+        
+        const countText = results.length === 0 
+          ? 'No products found' 
+          : `Found ${results.length} product${results.length !== 1 ? 's' : ''}`;
+        document.getElementById('resultsCount').textContent = countText;
+
+        if (results.length === 0) {
+          document.getElementById('searchResults').innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-3xl);">
+              <p style="font-size: 1.25rem; color: var(--muted); margin-bottom: var(--space-lg);">
+                No products match your search. Try different keywords.
+              </p>
+              <a href="products.html" class="btn btn-primary">Browse All Products</a>
+            </div>
+          `;
+        }
+      } else {
+        document.getElementById('resultsCount').textContent = 'Please enter a search query';
+        document.getElementById('searchResults').innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-3xl);">
+            <p style="font-size: 1.25rem; color: var(--muted);">Please enter a search query</p>
+          </div>
+        `;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initSearchPage);
+  </script>
+</body>
+</html>
