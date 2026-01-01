@@ -1,660 +1,310 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Browse Products - NeoMarket</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/reset.css">
-  <link rel="stylesheet" href="../css/variables.css">
-  <link rel="stylesheet" href="../css/global.css">
-  <link rel="stylesheet" href="../css/components.css">
-  <link rel="stylesheet" href="../css/layout.css">
-  <link rel="stylesheet" href="../css/responsive.css">
-  <style>
-    .products-page {
-      padding: var(--space-2xl) 0;
-    }
-
-    .products-container {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: var(--space-2xl);
-      max-width: 1600px;
-      margin: 0 auto;
-      padding: 0 var(--space-lg);
-    }
-
-    .filter-panel {
-      background: var(--surface);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius-md);
-      padding: var(--space-xl);
-      height: fit-content;
-      position: sticky;
-      top: 90px;
-      backdrop-filter: blur(10px);
-    }
-
-    .filter-section {
-      margin-bottom: var(--space-xl);
-      padding-bottom: var(--space-xl);
-      border-bottom: 1px solid var(--glass-border);
-    }
-
-    .filter-section:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-    }
-
-    .filter-title {
-      font-size: 0.875rem;
-      font-weight: 700;
-      color: var(--text);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: var(--space-md);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-    }
-
-    .filter-content {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-sm);
-    }
-
-    .filter-checkbox {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-      cursor: pointer;
-      padding: var(--space-xs);
-      border-radius: var(--radius-sm);
-      transition: background var(--transition-fast);
-    }
-
-    .filter-checkbox:hover {
-      background: rgba(0, 230, 195, 0.05);
-    }
-
-    .filter-checkbox input[type="checkbox"],
-    .filter-checkbox input[type="radio"] {
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-      accent-color: var(--accent);
-    }
-
-    .filter-checkbox label {
-      color: var(--muted);
-      font-size: 0.875rem;
-      cursor: pointer;
-      flex: 1;
-    }
-
-    .filter-count {
-      color: var(--muted);
-      font-size: 0.75rem;
-    }
-
-    .price-range-inputs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-sm);
-    }
-
-    .price-input {
-      padding: var(--space-sm);
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius-sm);
-      color: var(--text);
-      font-size: 0.875rem;
-    }
-
-    .filter-actions {
-      display: flex;
-      gap: var(--space-sm);
-      margin-top: var(--space-lg);
-    }
-
-    .products-main {
-      min-height: 60vh;
-    }
-
-    .products-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: var(--space-xl);
-      flex-wrap: wrap;
-      gap: var(--space-lg);
-    }
-
-    .products-count {
-      color: var(--muted);
-      font-size: 0.875rem;
-    }
-
-    .products-controls {
-      display: flex;
-      align-items: center;
-      gap: var(--space-md);
-    }
-
-    .sort-select {
-      padding: var(--space-sm) var(--space-lg);
-      background: var(--surface);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius-sm);
-      color: var(--text);
-      font-size: 0.875rem;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-    }
-
-    .active-filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-sm);
-      margin-bottom: var(--space-xl);
-    }
-
-    .filter-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-sm);
-      padding: var(--space-xs) var(--space-md);
-      background: var(--surface);
-      border: 1px solid var(--accent);
-      border-radius: 999px;
-      color: var(--accent);
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .filter-chip button {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: var(--accent);
-      color: var(--bg);
-      font-size: 0.75rem;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .mobile-filter-btn {
-      display: none;
-      position: fixed;
-      bottom: var(--space-xl);
-      right: var(--space-xl);
-      z-index: 100;
-      padding: var(--space-md) var(--space-xl);
-      background: var(--accent);
-      color: var(--bg);
-      border-radius: 999px;
-      font-weight: 700;
-      box-shadow: var(--shadow-lg);
-    }
-
-    @media (max-width: 1024px) {
-      .products-container {
-        grid-template-columns: 1fr;
-      }
-
-      .filter-panel {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        z-index: 1000;
-        overflow-y: auto;
-        border-radius: 0;
-      }
-
-      .filter-panel.mobile-open {
-        display: block;
-      }
-
-      .mobile-filter-btn {
-        display: flex;
-      }
-
-      .filter-panel-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: var(--space-xl);
-        padding-bottom: var(--space-lg);
-        border-bottom: 1px solid var(--glass-border);
-      }
-
-      .filter-panel-header h3 {
-        font-size: 1.25rem;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - NeoMarket</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/responsive.css">
 </head>
 <body>
-  <!-- Navigation -->
-  <nav class="main-nav" id="mainNav">
-    <div class="nav-container">
-      <div class="nav-left">
-        <a href="index.html" class="logo">
-          <span class="logo-icon">◆</span>
-          <span class="logo-text">NeoMarket</span>
-        </a>
-      </div>
-      
-      <div class="nav-center">
-        <div class="search-bar">
-          <input type="search" id="navSearch" placeholder="Search gaming hardware..." aria-label="Search products">
-          <button class="search-btn" aria-label="Search">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </button>
-          <button class="search-clear" id="searchClear" aria-label="Clear search" style="display: none;">×</button>
-        </div>
-        <div class="search-suggestions" id="searchSuggestions" style="display: none;"></div>
-      </div>
-      
-      <div class="nav-right">
-        <button class="btn btn-primary btn-sell" onclick="window.location.href='vendor-dashboard.html'">Sell</button>
-        <a href="cart.html" class="icon-btn cart-btn" aria-label="Shopping cart">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M9 2L7 6M17 6l-2-4M6 6h12l1 13H5L6 6zM9 11v5M15 11v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <span class="badge" id="cartBadge">0</span>
-        </a>
-        <div class="profile-menu">
-          <button class="icon-btn profile-btn" id="profileBtn" aria-label="User menu" aria-expanded="false">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
-              <path d="M4 20c0-4 3.5-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </button>
-          <div class="dropdown-menu" id="profileDropdown" style="display: none;">
-            <div id="authMenu"></div>
-          </div>
-        </div>
-        <button class="hamburger" id="hamburger" aria-label="Menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobileMenu">
-    <div class="mobile-search">
-      <input type="search" placeholder="Search products..." aria-label="Search">
-      <button aria-label="Search">🔍</button>
-    </div>
-    <nav class="mobile-nav">
-      <a href="index.html">Home</a>
-      <a href="products.html">Browse</a>
-      <a href="vendor-dashboard.html">Sell</a>
-      <a href="wishlist.html">Wishlist</a>
-      <a href="cart.html">Cart</a>
-      <div id="mobileAuthLinks"></div>
-    </nav>
-  </div>
-
-  <!-- Products Page -->
-  <section class="products-page">
-    <div class="products-container">
-      <!-- Filter Sidebar -->
-      <aside class="filter-panel" id="filterPanel">
-        <div class="filter-panel-header" style="display: none;">
-          <h3>Filters</h3>
-          <button onclick="toggleMobileFilters()" style="font-size: 1.5rem;">&times;</button>
-        </div>
-
-        <!-- Category Filter -->
-        <div class="filter-section">
-          <div class="filter-title">Category</div>
-          <div class="filter-content">
-            <label class="filter-checkbox">
-              <input type="radio" name="category" value="all" checked onchange="applyFilters()">
-              <span>All Products</span>
-            </label>
-            <label class="filter-checkbox">
-              <input type="radio" name="category" value="gpu" onchange="applyFilters()">
-              <span>Graphics Cards</span>
-            </label>
-            <label class="filter-checkbox">
-              <input type="radio" name="category" value="mice" onchange="applyFilters()">
-              <span>Gaming Mice</span>
-            </label>
-            <label class="filter-checkbox">
-              <input type="radio" name="category" value="keyboards" onchange="applyFilters()">
-              <span>Keyboards</span>
-            </label>
-            <label class="filter-checkbox">
-              <input type="radio" name="category" value="monitors" onchange="applyFilters()">
-              <span>Monitors</span>
-            </label>
-            <label class="filter-checkbox">
-              <input type="radio" name="category" value="cpu" onchange="applyFilters()">
-              <span>Processors</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Brand Filter -->
-        <div class="filter-section">
-          <div class="filter-title">Brand</div>
-          <div class="filter-content" id="brandFilters">
-            <!-- Dynamically populated -->
-          </div>
-        </div>
-
-        <!-- Price Range -->
-        <div class="filter-section">
-          <div class="filter-title">Price Range</div>
-          <div class="filter-content">
-            <div class="price-range-inputs">
-              <input type="number" class="price-input" id="minPrice" placeholder="Min" min="0">
-              <input type="number" class="price-input" id="maxPrice" placeholder="Max" min="0">
+    <div id="toast-container"></div>
+    
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">◆</span>
+                <span class="logo-text">NeoMarket</span>
+            </a>
+            
+            <form class="search-form" id="searchForm">
+                <input type="text" class="search-input" placeholder="Search gaming gear..." id="searchInput">
+                <button type="submit" class="search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </form>
+            
+            <div class="nav-actions">
+                <a href="wishlist.html" class="nav-link">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    <span class="badge" id="wishlistBadge">0</span>
+                </a>
+                <a href="cart.html" class="nav-link">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="badge" id="cartBadge">0</span>
+                </a>
+                <div class="user-menu">
+                    <button class="user-btn" id="userMenuBtn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu" id="userDropdown">
+                        <a href="login.html" class="dropdown-item" id="loginLink">Login</a>
+                        <a href="register.html" class="dropdown-item" id="registerLink">Register</a>
+                        <a href="vendor-dashboard.html" class="dropdown-item" id="dashboardLink" style="display: none;">Dashboard</a>
+                        <a href="admin.html" class="dropdown-item" id="adminLink" style="display: none;">Admin Panel</a>
+                        <button class="dropdown-item" id="logoutBtn" style="display: none;">Logout</button>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
+    </nav>
 
-        <!-- Condition Filter -->
-        <div class="filter-section">
-          <div class="filter-title">Condition</div>
-          <div class="filter-content">
-            <label class="filter-checkbox">
-              <input type="radio" name="condition" value="all" checked onchange="applyFilters()">
-              <span>All</span>
-            </label>
-            <label class="filter-checkbox">
-              <input type="radio" name="condition" value="new" onchange="applyFilters()">
-              <span>New</span>
-            </label>
-            <label class="filter-checkbox">
-              <input type="radio" name="condition" value="used" onchange="applyFilters()">
-              <span>Used</span>
-            </label>
-            <label class="filter-checkbox">
-              <input type="radio" name="condition" value="refurbished" onchange="applyFilters()">
-              <span>Refurbished</span>
-            </label>
-          </div>
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">Gaming Products</h1>
+            <p class="page-subtitle">Discover the best gaming hardware</p>
         </div>
-
-        <div class="filter-actions">
-          <button class="btn btn-primary" onclick="applyFilters()" style="flex: 1;">Apply</button>
-          <button class="btn btn-outline" onclick="resetFilters()">Reset</button>
-        </div>
-      </aside>
-
-      <!-- Products Main Content -->
-      <main class="products-main">
-        <div class="products-header">
-          <div>
-            <h1 style="margin-bottom: var(--space-xs);">Browse Products</h1>
-            <p class="products-count" id="productsCount">Loading...</p>
-          </div>
-          <div class="products-controls">
-            <select class="sort-select" id="sortSelect" onchange="applyFilters()">
-              <option value="">Sort by</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="rating">Highest Rated</option>
-              <option value="newest">Newest First</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="active-filters" id="activeFilters"></div>
-
-        <div class="product-grid" id="productGrid">
-          <!-- Products will be dynamically inserted here -->
-        </div>
-      </main>
     </div>
-  </section>
 
-  <!-- Mobile Filter Button -->
-  <button class="mobile-filter-btn" onclick="toggleMobileFilters()">
-    <span>🔍 Filters</span>
-  </button>
+    <section class="section">
+        <div class="container">
+            <div class="products-layout">
+                <aside class="filters-sidebar">
+                    <div class="filter-card">
+                        <h3 class="filter-title">Filters</h3>
+                        
+                        <div class="filter-group">
+                            <h4 class="filter-label">Categories</h4>
+                            <div class="filter-options">
+                                <label class="filter-option">
+                                    <input type="checkbox" name="category" value="all" checked>
+                                    <span>All Products</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="category" value="consoles">
+                                    <span>Gaming Consoles</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="category" value="processors">
+                                    <span>Processors</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="category" value="graphics">
+                                    <span>Graphics Cards</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="category" value="peripherals">
+                                    <span>Peripherals</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="category" value="monitors">
+                                    <span>Monitors</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h4 class="filter-label">Price Range</h4>
+                            <div class="price-inputs">
+                                <input type="number" class="form-input" placeholder="Min" id="minPrice">
+                                <span>-</span>
+                                <input type="number" class="form-input" placeholder="Max" id="maxPrice">
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h4 class="filter-label">Sort By</h4>
+                            <select class="form-select" id="sortBy">
+                                <option value="featured">Featured</option>
+                                <option value="price-asc">Price: Low to High</option>
+                                <option value="price-desc">Price: High to Low</option>
+                                <option value="name">Name: A to Z</option>
+                                <option value="rating">Highest Rated</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-secondary btn-block" id="applyFilters">Apply Filters</button>
+                        <button class="btn btn-ghost btn-block" id="resetFilters">Reset</button>
+                    </div>
+                </aside>
+                
+                <div class="products-main">
+                    <div class="products-toolbar">
+                        <div class="results-count" id="resultsCount">Showing 17 products</div>
+                        <button class="btn btn-secondary btn-sm" id="toggleFilters">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <line x1="4" y1="21" x2="4" y2="14"></line>
+                                <line x1="4" y1="10" x2="4" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12" y2="3"></line>
+                                <line x1="20" y1="21" x2="20" y2="16"></line>
+                                <line x1="20" y1="12" x2="20" y2="3"></line>
+                                <line x1="1" y1="14" x2="7" y2="14"></line>
+                                <line x1="9" y1="8" x2="15" y2="8"></line>
+                                <line x1="17" y1="16" x2="23" y2="16"></line>
+                            </svg>
+                            Filters
+                        </button>
+                    </div>
+                    
+                    <div class="products-grid" id="productsGrid">
+                        <!-- Products loaded by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <!-- Footer -->
-  <footer class="main-footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-col">
-          <h3>NeoMarket</h3>
-          <p>Your trusted marketplace for premium gaming hardware.</p>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <span class="logo-icon">◆</span>
+                        <span class="logo-text">NeoMarket</span>
+                    </div>
+                    <p class="footer-desc">
+                        The premium marketplace for gaming hardware enthusiasts
+                    </p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-title">Shop</h4>
+                    <ul class="footer-links">
+                        <li><a href="products.html">All Products</a></li>
+                        <li><a href="products.html?category=consoles">Consoles</a></li>
+                        <li><a href="products.html?category=processors">Processors</a></li>
+                        <li><a href="products.html?category=graphics">Graphics Cards</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-title">Account</h4>
+                    <ul class="footer-links">
+                        <li><a href="login.html">Login</a></li>
+                        <li><a href="register.html">Register</a></li>
+                        <li><a href="cart.html">Cart</a></li>
+                        <li><a href="wishlist.html">Wishlist</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-title">Sell</h4>
+                    <ul class="footer-links">
+                        <li><a href="register.html">Become a Seller</a></li>
+                        <li><a href="vendor-dashboard.html">Seller Dashboard</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 NeoMarket. All rights reserved.</p>
+            </div>
         </div>
-        <div class="footer-col">
-          <h4>Shop</h4>
-          <a href="products.html">All Products</a>
-          <a href="products.html?category=gpu">Graphics Cards</a>
-          <a href="products.html?category=mice">Gaming Mice</a>
-          <a href="products.html?category=keyboards">Keyboards</a>
+    </footer>
+
+    <div id="quickViewModal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-lg">
+            <button class="modal-close">&times;</button>
+            <div class="modal-body" id="quickViewContent"></div>
         </div>
-        <div class="footer-col">
-          <h4>Account</h4>
-          <a href="login.html">Login</a>
-          <a href="register.html">Register</a>
-          <a href="wishlist.html">Wishlist</a>
-          <a href="cart.html">Cart</a>
-        </div>
-        <div class="footer-col">
-          <h4>Support</h4>
-          <a href="#">Help Center</a>
-          <a href="#">Shipping Info</a>
-          <a href="#">Returns</a>
-          <a href="#">Contact Us</a>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 NeoMarket. Pure HTML/CSS/JS Project.</p>
-      </div>
     </div>
-  </footer>
 
-  <!-- Toast Container -->
-  <div class="toast-container" id="toastContainer"></div>
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/toasts.js"></script>
+    <script src="../js/modals.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/cart.js"></script>
+    <script src="../js/wishlist.js"></script>
+    <script src="../js/products.js"></script>
+    <script>
+        // Initialize products page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAllProducts();
+            setupFilters();
+        });
 
-  <!-- Quick View Modal -->
-  <div class="modal" id="quickViewModal" style="display: none;">
-    <div class="modal-overlay"></div>
-    <div class="modal-content modal-lg">
-      <button class="modal-close" aria-label="Close">&times;</button>
-      <div id="quickViewContent"></div>
-    </div>
-  </div>
+        function loadAllProducts() {
+            const grid = document.getElementById('productsGrid');
+            const products = window.PRODUCTS;
+            
+            grid.innerHTML = products.map(product => createProductCard(product)).join('');
+            updateResultsCount(products.length);
+        }
 
-  <script src="../js/config.js"></script>
-  <script src="../js/utils.js"></script>
-  <script src="../js/toasts.js"></script>
-  <script src="../js/modals.js"></script>
-  <script src="../js/auth.js"></script>
-  <script src="../js/cart.js"></script>
-  <script src="../js/wishlist.js"></script>
-  <script src="../js/products.js"></script>
-  <script src="../js/main.js"></script>
-  <script>
-    let currentFilters = {
-      category: 'all',
-      brands: [],
-      minPrice: null,
-      maxPrice: null,
-      condition: 'all',
-      sort: ''
-    };
+        function setupFilters() {
+            const applyBtn = document.getElementById('applyFilters');
+            const resetBtn = document.getElementById('resetFilters');
+            const sortSelect = document.getElementById('sortBy');
+            
+            applyBtn.addEventListener('click', applyFilters);
+            resetBtn.addEventListener('click', resetFilters);
+            sortSelect.addEventListener('change', applyFilters);
+        }
 
-    function initProductsPage() {
-      console.log('[v0] Initializing products page');
-      
-      // Get URL params
-      const params = getUrlParams();
-      if (params.category) {
-        currentFilters.category = params.category;
-        document.querySelector(`input[name="category"][value="${params.category}"]`).checked = true;
-      }
+        function applyFilters() {
+            let products = [...window.PRODUCTS];
+            
+            // Category filter
+            const selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked'))
+                .map(cb => cb.value);
+            
+            if (!selectedCategories.includes('all')) {
+                products = products.filter(p => selectedCategories.includes(p.category));
+            }
+            
+            // Price filter
+            const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+            const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+            products = products.filter(p => p.price >= minPrice && p.price <= maxPrice);
+            
+            // Sort
+            const sortBy = document.getElementById('sortBy').value;
+            switch(sortBy) {
+                case 'price-asc':
+                    products.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    products.sort((a, b) => b.price - a.price);
+                    break;
+                case 'name':
+                    products.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'rating':
+                    products.sort((a, b) => b.rating - a.rating);
+                    break;
+            }
+            
+            // Update display
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = products.map(product => createProductCard(product)).join('');
+            updateResultsCount(products.length);
+        }
 
-      // Initialize brand filters
-      initBrandFilters();
-      
-      // Apply initial filters
-      applyFilters();
-    }
+        function resetFilters() {
+            document.querySelectorAll('input[name="category"]').forEach(cb => {
+                cb.checked = cb.value === 'all';
+            });
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('sortBy').value = 'featured';
+            loadAllProducts();
+        }
 
-    function initBrandFilters() {
-      const allProducts = getProducts();
-      const brands = [...new Set(allProducts.map(p => p.brand))].sort();
-      
-      const brandFiltersContainer = document.getElementById('brandFilters');
-      brandFiltersContainer.innerHTML = brands.map(brand => `
-        <label class="filter-checkbox">
-          <input type="checkbox" value="${brand}" onchange="toggleBrand('${brand}')">
-          <span>${brand}</span>
-        </label>
-      `).join('');
-    }
-
-    function toggleBrand(brand) {
-      if (currentFilters.brands.includes(brand)) {
-        currentFilters.brands = currentFilters.brands.filter(b => b !== brand);
-      } else {
-        currentFilters.brands.push(brand);
-      }
-    }
-
-    function applyFilters() {
-      // Get filter values
-      currentFilters.category = document.querySelector('input[name="category"]:checked').value;
-      currentFilters.condition = document.querySelector('input[name="condition"]:checked').value;
-      currentFilters.minPrice = document.getElementById('minPrice').value ? parseFloat(document.getElementById('minPrice').value) : null;
-      currentFilters.maxPrice = document.getElementById('maxPrice').value ? parseFloat(document.getElementById('maxPrice').value) : null;
-      currentFilters.sort = document.getElementById('sortSelect').value;
-
-      // Build filter object
-      const filters = {};
-      if (currentFilters.category !== 'all') filters.category = currentFilters.category;
-      if (currentFilters.brands.length > 0) filters.brands = currentFilters.brands;
-      if (currentFilters.minPrice) filters.minPrice = currentFilters.minPrice;
-      if (currentFilters.maxPrice) filters.maxPrice = currentFilters.maxPrice;
-      if (currentFilters.condition !== 'all') filters.condition = currentFilters.condition;
-      if (currentFilters.sort) filters.sort = currentFilters.sort;
-
-      // Filter products
-      const filtered = filterProducts(filters);
-      
-      // Display results
-      displayProducts(filtered, 'productGrid');
-      
-      // Update count
-      document.getElementById('productsCount').textContent = `${filtered.length} products found`;
-      
-      // Update active filters display
-      updateActiveFilters();
-
-      // Close mobile filters
-      if (window.innerWidth <= 1024) {
-        document.getElementById('filterPanel').classList.remove('mobile-open');
-      }
-    }
-
-    function updateActiveFilters() {
-      const container = document.getElementById('activeFilters');
-      const chips = [];
-
-      if (currentFilters.category !== 'all') {
-        chips.push({ label: `Category: ${currentFilters.category}`, key: 'category' });
-      }
-      
-      currentFilters.brands.forEach(brand => {
-        chips.push({ label: `Brand: ${brand}`, key: 'brand', value: brand });
-      });
-
-      if (currentFilters.minPrice || currentFilters.maxPrice) {
-        const priceLabel = `Price: ${currentFilters.minPrice ? '$' + currentFilters.minPrice : 'Any'} - ${currentFilters.maxPrice ? '$' + currentFilters.maxPrice : 'Any'}`;
-        chips.push({ label: priceLabel, key: 'price' });
-      }
-
-      if (currentFilters.condition !== 'all') {
-        chips.push({ label: `Condition: ${currentFilters.condition}`, key: 'condition' });
-      }
-
-      if (chips.length > 0) {
-        container.innerHTML = chips.map(chip => `
-          <div class="filter-chip">
-            <span>${chip.label}</span>
-            <button onclick="removeFilter('${chip.key}', '${chip.value || ''}')" aria-label="Remove filter">&times;</button>
-          </div>
-        `).join('') + `
-          <button class="btn btn-outline" onclick="resetFilters()" style="height: auto; padding: var(--space-xs) var(--space-md); font-size: 0.75rem;">
-            Clear All
-          </button>
-        `;
-      } else {
-        container.innerHTML = '';
-      }
-    }
-
-    function removeFilter(key, value) {
-      if (key === 'category') {
-        document.querySelector('input[name="category"][value="all"]').checked = true;
-      } else if (key === 'brand') {
-        currentFilters.brands = currentFilters.brands.filter(b => b !== value);
-        document.querySelector(`input[type="checkbox"][value="${value}"]`).checked = false;
-      } else if (key === 'price') {
-        document.getElementById('minPrice').value = '';
-        document.getElementById('maxPrice').value = '';
-      } else if (key === 'condition') {
-        document.querySelector('input[name="condition"][value="all"]').checked = true;
-      }
-      applyFilters();
-    }
-
-    function resetFilters() {
-      currentFilters = {
-        category: 'all',
-        brands: [],
-        minPrice: null,
-        maxPrice: null,
-        condition: 'all',
-        sort: ''
-      };
-
-      document.querySelector('input[name="category"][value="all"]').checked = true;
-      document.querySelector('input[name="condition"][value="all"]').checked = true;
-      document.querySelectorAll('#brandFilters input[type="checkbox"]').forEach(cb => cb.checked = false);
-      document.getElementById('minPrice').value = '';
-      document.getElementById('maxPrice').value = '';
-      document.getElementById('sortSelect').value = '';
-
-      applyFilters();
-    }
-
-    function toggleMobileFilters() {
-      const panel = document.getElementById('filterPanel');
-      panel.classList.toggle('mobile-open');
-      document.querySelector('.filter-panel-header').style.display = 
-        panel.classList.contains('mobile-open') ? 'flex' : 'none';
-    }
-
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', initProductsPage);
-  </script>
+        function updateResultsCount(count) {
+            document.getElementById('resultsCount').textContent = `Showing ${count} products`;
+        }
+    </script>
 </body>
 </html>

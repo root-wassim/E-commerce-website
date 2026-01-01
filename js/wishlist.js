@@ -1,76 +1,56 @@
-// Wishlist Management
+// Wishlist Manager
+window.Wishlist = {
+  // Get wishlist items
+  getItems() {
+    return window.Utils.storage.get("wishlist") || []
+  },
 
-const STORAGE_KEYS = window.APP_CONFIG?.STORAGE_KEYS || {
-  WISHLIST: "neomarket_wishlist",
-}
+  // Add item to wishlist
+  addItem(productId) {
+    const wishlist = this.getItems()
 
-function getWishlist() {
-  const wishlist = localStorage.getItem(STORAGE_KEYS.WISHLIST)
-  return wishlist ? JSON.parse(wishlist) : []
-}
-
-function saveWishlist(wishlistData) {
-  localStorage.setItem(STORAGE_KEYS.WISHLIST, JSON.stringify(wishlistData))
-}
-
-function addToWishlist(productId) {
-  const wishlist = getWishlist()
-
-  if (wishlist.includes(productId)) {
-    window.showToast("Already in wishlist", "info")
-    return false
-  }
-
-  wishlist.push(productId)
-  saveWishlist(wishlist)
-  window.showToast("Added to wishlist", "success")
-  updateWishlistUI()
-  return true
-}
-
-function removeFromWishlist(productId) {
-  let wishlist = getWishlist()
-  wishlist = wishlist.filter((id) => id !== productId)
-  saveWishlist(wishlist)
-  window.showToast("Removed from wishlist", "success")
-  updateWishlistUI()
-}
-
-function toggleWishlist(productId) {
-  const wishlist = getWishlist()
-  if (wishlist.includes(productId)) {
-    removeFromWishlist(productId)
-    return false
-  } else {
-    addToWishlist(productId)
-    return true
-  }
-}
-
-function isInWishlist(productId) {
-  const wishlist = getWishlist()
-  return wishlist.includes(productId)
-}
-
-function getWishlistProducts() {
-  const wishlist = getWishlist()
-  return wishlist.map((id) => window.findProductById(id)).filter((p) => p)
-}
-
-function updateWishlistUI() {
-  const buttons = document.querySelectorAll(".wishlist-btn")
-  buttons.forEach((btn) => {
-    const productId = btn.dataset.productId
-    if (productId) {
-      btn.classList.toggle("active", isInWishlist(productId))
+    if (!wishlist.includes(productId)) {
+      wishlist.push(productId)
+      window.Utils.storage.set("wishlist", wishlist)
+      this.updateBadge()
+      return true
     }
-  })
-}
 
-window.getWishlist = getWishlist
-window.addToWishlist = addToWishlist
-window.removeFromWishlist = removeFromWishlist
-window.toggleWishlist = toggleWishlist
-window.isInWishlist = isInWishlist
-window.getWishlistProducts = getWishlistProducts
-window.updateWishlistUI = updateWishlistUI
+    return false
+  },
+
+  // Remove item from wishlist
+  removeItem(productId) {
+    let wishlist = this.getItems()
+    wishlist = wishlist.filter((id) => id !== productId)
+    window.Utils.storage.set("wishlist", wishlist)
+    this.updateBadge()
+    return true
+  },
+
+  // Check if item is in wishlist
+  hasItem(productId) {
+    return this.getItems().includes(productId)
+  },
+
+  // Toggle item in wishlist
+  toggleItem(productId) {
+    if (this.hasItem(productId)) {
+      this.removeItem(productId)
+      return false
+    } else {
+      this.addItem(productId)
+      return true
+    }
+  },
+
+  // Update badge count
+  updateBadge() {
+    const badge = document.getElementById("wishlistBadge")
+    if (badge) {
+      const count = this.getItems().length
+      badge.textContent = count
+      badge.style.display = count > 0 ? "flex" : "none"
+    }
+  },
+}
